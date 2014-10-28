@@ -4,15 +4,34 @@
 
 function Main(){
     var self = this;
+
+    //app vars
     this.$canvas = $('#canvas').get(0);
     this.clickX = new Array();
     this.clickY = new Array();
     this.clickDrag = new Array();
     this.paint = false;
+
+    //socket
+    this.socket = io.connect('/');
+    this.socket.on('connect', function(socket){
+ 
+    });
+
+    this.socket.on('init', function(data){
+       self.init(data);
+    });
+
+    this.socket.on('addClick', function(data){
+       self.addClick(data.clickX, data.clickY, data.clickDrag);
+    });
+    this.socket.on('addClick1', function(data){console.log(data)});
+
+    //canvas
     var c = document.getElementById("canvas");
     this.ctx = c.getContext("2d");
-    this.ctx.fillStyle = "#FF0000";
-    this.ctx.fillRect(0,0,150,75);
+
+    //bind events
     $('#canvas').mousedown(function(e){
         self.mouseDownEvent(e);
     });
@@ -24,13 +43,23 @@ function Main(){
     });
 }
 
+Main.prototype.init = function(data){
+    this.clickX = data.clickX;
+    this.clickY = data.clickY;
+    this.clickDrag = data.clickDrag;
+    this.redraw();
+}
+
 Main.prototype.mouseDownEvent = function(e){
     var mouseX = e.pageX - this.$canvas.offsetLeft;
     var mouseY = e.pageY - this.$canvas.offsetTop;
 
     this.paint = true;
+    var x = e.pageX - this.$canvas.offsetLeft;
+    var y = e.pageY - this.$canvas.offsetTop;
+
     this.addClick(e.pageX - this.$canvas.offsetLeft, e.pageY - this.$canvas.offsetTop);
-    this.redraw();
+    this.socket.emit('addClick', {clickX : x, clickY: y, clickDrag : false});
 }
 
 Main.prototype.mouseUpEvent = function(e){
@@ -39,8 +68,10 @@ Main.prototype.mouseUpEvent = function(e){
 
 Main.prototype.mouseMoveEvent = function(e){
     if(this.paint){
+        var x = e.pageX - this.$canvas.offsetLeft;
+        var y = e.pageY - this.$canvas.offsetTop;
         this.addClick(e.pageX - this.$canvas.offsetLeft, e.pageY - this.$canvas.offsetTop, true);
-        this.redraw();
+        this.socket.emit('addClick', {clickX : x, clickY: y, clickDrag : true});
     }
 }
 
@@ -48,6 +79,8 @@ Main.prototype.addClick = function(x, y, dragging){
     this.clickX.push(x);
     this.clickY.push(y);
     this.clickDrag.push(dragging);
+    this.redraw();
+
 }
 
 Main.prototype.redraw = function(){
@@ -69,10 +102,8 @@ Main.prototype.redraw = function(){
     }
 }
 
-Main.prototype.connect = function(){
 
-}
 
-(function(){
+$(document).ready(function(){
     var app = new Main();
-}());
+});

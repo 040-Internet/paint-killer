@@ -5,14 +5,38 @@
 var express = require('express');
 var app = express();
 var serveStatic = require('serve-static');
+var io = require('socket.io');
+var http = require('http');
 
 app.use(serveStatic('public', {}));
 
-var server = app.listen(3000, function () {
 
-    var host = server.address().address;
-    var port = server.address().port;
 
-    console.log('Example app listening at http://%s:%s', host, port);
-
+var server = http.createServer(app).listen(3000, function() {
+    console.log('Express server listening on port ' + 3000);
 });
+
+io = io.listen(server);
+
+
+var clickX = [];
+var clickY = [];
+var clickDrag = [];
+
+
+io.on('connection', function(socket){
+    /*socket.on('', function(){
+        console.log(arguments);
+    });*/
+    socket.join('main');
+    socket.emit('init',{clickX : clickX, clickY: clickY, clickDrag : clickDrag});
+    socket.on('addClick', function(data){
+        clickX.push(data.clickX);
+        clickY.push(data.clickY);
+        clickDrag.push(data.clickDrag);
+        socket.broadcast.to('main').emit('addClick', data);
+
+
+    });
+});
+

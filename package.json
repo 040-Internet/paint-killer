@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "express": ">= 4.*",
-    "serve-static": "*"
+    "serve-static": "*",
+    "socket.io": "*"
   }
 }
