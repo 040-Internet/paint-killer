@@ -1,0 +1,88 @@
+/* BASICS ---------------- */
+html {
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    background-color: #efefef;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+}
+
+a {
+    color: #252525;
+    text-decoration: none;
+}
+
+a:focus,
+a:hover {
+    text-decoration: underline;
+}
+
+a:focus {
+    outline-color: rgb(0, 0, 0);
+    outline-color: rgba(0, 0, 0, 0.6);
+}
+
+label {
+
+}
+
+input[type="text"],
+input[type="password"],
+textarea {
+
+}
+
+input[type="submit"],
+button {
+
+}
+
+[disabled] {
+    opacity: 0.7;
+}
+
+::-moz-selection {
+    background: #b3d4fc;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+::selection {
+    background: #b3d4fc;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+
+/* CANVAS ---------------- */
+#canvas-holder {
+    text-align: center;
+    height: 100%;
+}
+
+#canvas-holder:before {
+    content: '';
+    height: 100%;
+    background: #000;
+}
+
+#canvas-holder:before,
+canvas {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+canvas {
+    background: #fff;
+    margin-left: -0.25em
+}
+
+/* TOOLBAR ---------------- */
+.toolbar {
+    padding: 20px;
+    background: #ccc;
+    position: fixed;
+    top: 10px;
+    left: 10px;
+}
