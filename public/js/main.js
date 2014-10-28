@@ -4,6 +4,7 @@
 
 function Main(){
     var self = this;
+    this.$canvas = $('#canvas').get(0);
     this.clickX = new Array();
     this.clickY = new Array();
     this.clickDrag = new Array();
@@ -24,12 +25,11 @@ function Main(){
 }
 
 Main.prototype.mouseDownEvent = function(e){
-    var $canvas = $('#canvas').get(0);
-    var mouseX = e.pageX - $canvas.offsetLeft;
-    var mouseY = e.pageY - $canvas.offsetTop;
+    var mouseX = e.pageX - this.$canvas.offsetLeft;
+    var mouseY = e.pageY - this.$canvas.offsetTop;
 
     this.paint = true;
-    this.addClick(e.pageX - $canvas.offsetLeft, e.pageY - $canvas.offsetTop);
+    this.addClick(e.pageX - this.$canvas.offsetLeft, e.pageY - this.$canvas.offsetTop);
     this.redraw();
 }
 
@@ -39,8 +39,7 @@ Main.prototype.mouseUpEvent = function(e){
 
 Main.prototype.mouseMoveEvent = function(e){
     if(this.paint){
-        var $canvas = $('#canvas').get(0);
-        this.addClick(e.pageX - $canvas.offsetLeft, e.pageY - $canvas.offsetTop, true);
+        this.addClick(e.pageX - this.$canvas.offsetLeft, e.pageY - this.$canvas.offsetTop, true);
         this.redraw();
     }
 }
