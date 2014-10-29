@@ -15,7 +15,7 @@ function Main(){
     //socket
     this.socket = io.connect('/');
     this.socket.on('connect', function(socket){
- 
+
     });
 
     this.socket.on('init', function(data){
@@ -25,7 +25,6 @@ function Main(){
     this.socket.on('addClick', function(data){
        self.addClick(data.clickX, data.clickY, data.clickDrag);
     });
-    this.socket.on('addClick1', function(data){console.log(data)});
 
     //canvas
     var c = document.getElementById("canvas");

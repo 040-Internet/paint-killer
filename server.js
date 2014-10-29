@@ -25,9 +25,7 @@ var clickDrag = [];
 
 
 io.on('connection', function(socket){
-    /*socket.on('', function(){
-        console.log(arguments);
-    });*/
+
     socket.join('main');
     socket.emit('init',{clickX : clickX, clickY: clickY, clickDrag : clickDrag});
     socket.on('addClick', function(data){
