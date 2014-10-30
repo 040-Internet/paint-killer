@@ -1,0 +1,25 @@
+{
+  "name": "paint-killer",
+  "version": "0.0.0",
+  "homepage": "https://github.com/040-Internet/paint-killer",
+  "authors": [
+    "Nicklas Andersson <andersson.nicklas@gmail.com>"
+  ],
+  "description": "Paint killer in canvas and websockets",
+  "main": "index.html",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "none at the moment",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.1"
+  }
+}
