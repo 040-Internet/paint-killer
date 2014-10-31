@@ -18,23 +18,40 @@ var server = http.createServer(app).listen(3000, function() {
 
 io = io.listen(server);
 
-
-var clickX = [];
-var clickY = [];
-var clickDrag = [];
-
+var roomData = [];
 
 io.on('connection', function(socket){
+    var connectionId = socket.conn.id;
+    var room = 'main';
+    socket.join(room);
 
-    socket.join('main');
-    socket.emit('init',{clickX : clickX, clickY: clickY, clickDrag : clickDrag});
-    socket.on('addClick', function(data){
-        clickX.push(data.clickX);
-        clickY.push(data.clickY);
-        clickDrag.push(data.clickDrag);
-        socket.broadcast.to('main').emit('addClick', data);
+    roomData[connectionId] = [];
 
+    //announce new user
+    socket.broadcast.to(room).emit('userConnect', connectionId);
 
+    //announce user disconnect
+    socket.on('disconnect', function(){
+        socket.broadcast.to(room).emit('userDisconnect', connectionId);
     });
+
+    //mousedown
+    socket.on('mouseDown', function(e){
+        roomData[connectionId].push(e);
+        socket.broadcast.to(room).emit('mouseDown', {user:connectionId, event:e});
+    });
+
+    //mouseup
+    socket.on('mouseUp', function(e){
+        roomData[connectionId].push(e);
+        socket.broadcast.to(room).emit('mouseUp', {user:connectionId, event:e});
+    });
+
+    //mousemove
+    socket.on('mouseMove', function(e){
+        roomData[connectionId].push(e);
+        socket.broadcast.to(room).emit('mouseMove', {user:connectionId, event:e});
+    });
+
 });
 

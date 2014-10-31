@@ -5,99 +5,74 @@
 function Main(){
     var self = this;
 
-    //app vars
-    this.$canvas = $('#canvas').get(0);
-    this.clickX = new Array();
-    this.clickY = new Array();
-    this.clickDrag = new Array();
-    this.paint = false;
-
-    //socket
-    this.socket = io.connect('/');
-    this.socket.on('connect', function(socket){
-
-    });
-
-    this.socket.on('init', function(data){
-       self.init(data);
-    });
-
-    this.socket.on('addClick', function(data){
-       self.addClick(data.clickX, data.clickY, data.clickDrag);
-    });
-
     //canvas
     var c = document.getElementById("canvas");
     this.ctx = c.getContext("2d");
 
+    //app vars
+    this.$canvas = $('#canvas').get(0);
+    this.$document = $(document).get(0);
+
+
+    this.users = [];
+    this.currentUser = new User(this, 'self');
+    this.users['self'] = this.currentUser;
+
+    //socket
+    this.socket = io.connect('/');
+
+    //small helper to get the current position for the mouse pointer
+    function getPos(e){
+        var x = e.pageX - self.$canvas.offsetLeft;
+        var y = e.pageY - self.$canvas.offsetTop;
+        return {x:x, y:y};
+    }
+
+
     //bind events
+
     $('#canvas').mousedown(function(e){
-        self.mouseDownEvent(e);
+        console.log('Down!');
+        self.currentUser.mouseDown(getPos(e), true);
     });
     $('#canvas').mouseup(function(e){
-        self.mouseUpEvent(e);
+        self.currentUser.mouseUp(getPos(e), true);
     });
     $('#canvas').mousemove(function(e){
-        self.mouseMoveEvent(e);
+        self.currentUser.mouseMove(getPos(e), true);
     });
-}
 
-Main.prototype.init = function(data){
-    this.clickX = data.clickX;
-    this.clickY = data.clickY;
-    this.clickDrag = data.clickDrag;
-    this.redraw();
-}
+    //listen to events
+    this.socket.on('userConnect', function(user){
+        self.checkOrCreateUser(user);
+    });
 
-Main.prototype.mouseDownEvent = function(e){
-    var mouseX = e.pageX - this.$canvas.offsetLeft;
-    var mouseY = e.pageY - this.$canvas.offsetTop;
+    this.socket.on('userDisconnect', function(user){
+        delete self.users[user];
+        console.log(user);
+    });
 
-    this.paint = true;
-    var x = e.pageX - this.$canvas.offsetLeft;
-    var y = e.pageY - this.$canvas.offsetTop;
+    this.socket.on('mouseDown', function(data){
+        self.checkOrCreateUser(data.user);
+        self.users[data.user].mouseDown(data.event, false);
+    });
 
-    this.addClick(e.pageX - this.$canvas.offsetLeft, e.pageY - this.$canvas.offsetTop);
-    this.socket.emit('addClick', {clickX : x, clickY: y, clickDrag : false});
-}
+    this.socket.on('mouseUp', function(data){
+        self.checkOrCreateUser(data.user);
+        self.users[data.user].mouseUp(data.event, false);
 
-Main.prototype.mouseUpEvent = function(e){
-    this.paint = false;
-}
+    });
 
-Main.prototype.mouseMoveEvent = function(e){
-    if(this.paint){
-        var x = e.pageX - this.$canvas.offsetLeft;
-        var y = e.pageY - this.$canvas.offsetTop;
-        this.addClick(e.pageX - this.$canvas.offsetLeft, e.pageY - this.$canvas.offsetTop, true);
-        this.socket.emit('addClick', {clickX : x, clickY: y, clickDrag : true});
-    }
-}
-
-Main.prototype.addClick = function(x, y, dragging){
-    this.clickX.push(x);
-    this.clickY.push(y);
-    this.clickDrag.push(dragging);
-    this.redraw();
+    this.socket.on('mouseMove', function(data){
+        self.checkOrCreateUser(data.user);
+        self.users[data.user].mouseMove(data.event, false);
+    });
 
 }
 
-Main.prototype.redraw = function(){
-    this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height); // Clears the canvas
-    this.ctx.strokeStyle = "#df4b26";
-    this.ctx.lineJoin = "round";
-    this.ctx.lineWidth = 5;
-
-    for(var i=0; i < this.clickX.length; i++) {
-        this.ctx.beginPath();
-        if(this.clickDrag[i] && i){
-            this.ctx.moveTo(this.clickX[i-1], this.clickY[i-1]);
-        }else{
-            this.ctx.moveTo(this.clickX[i]-1, this.clickY[i]);
-        }
-        this.ctx.lineTo(this.clickX[i], this.clickY[i]);
-        this.ctx.closePath();
-        this.ctx.stroke();
+Main.prototype.checkOrCreateUser = function(user){
+    if(!this.users.hasOwnProperty(user)){
+        this.users[user] = new User(this, user);
     }
 }
 
