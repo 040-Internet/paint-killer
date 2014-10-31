@@ -12,7 +12,9 @@ function Main(){
     //app vars
     this.$canvas = $('#canvas').get(0);
     this.$document = $(document).get(0);
-
+    this.tools = {
+      'pen' : Pen
+    };
 
     this.users = [];
     this.currentUser = new User(this, 'self');

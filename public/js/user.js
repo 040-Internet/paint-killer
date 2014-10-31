@@ -10,6 +10,7 @@ function User(app, id){
     this.x = 0;
     this.y = 0;
     this.isDrawing = false;
+    this.currentTool = 'pen';
 }
 
 User.prototype.connect = function(){
@@ -31,6 +32,8 @@ User.prototype.setColor = function(color){
 User.prototype.mouseDown = function(e, localUser){
     this.isDrawing = true;
 
+    this.app.tools[this.currentTool].start(this.app.ctx, this.x, e.x, this.y, e.y, 18, localUser ? this.color : e.color);
+
     this.x = e.x;
     this.y = e.y;
 
@@ -44,6 +47,11 @@ User.prototype.mouseDown = function(e, localUser){
 User.prototype.mouseUp = function(e, localUser){
     this.isDrawing = false;
 
+    this.app.tools[this.currentTool].start(this.app.ctx, this.x, e.x, this.y, e.y, 18, localUser ? this.color : e.color);
+
+    this.x = e.x;
+    this.y = e.y;
+
     if(localUser){
         this.app.socket.emit('mouseUp', e);
     }
@@ -52,7 +60,7 @@ User.prototype.mouseUp = function(e, localUser){
 User.prototype.mouseMove = function(e, localUser){
 
     if(this.isDrawing) {
-        Pen.draw(this.app.ctx, this.x, e.x, this.y, e.y, 18, localUser ? this.color : e.color);
+        this.app.tools[this.currentTool].draw(this.app.ctx, this.x, e.x, this.y, e.y, 18, localUser ? this.color : e.color);
     }
 
     this.x = e.x;
