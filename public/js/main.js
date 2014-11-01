@@ -34,7 +34,6 @@ function Main(){
     //bind events
 
     $('#canvas').mousedown(function(e){
-        console.log('Down!');
         self.currentUser.mouseDown(getPos(e), true);
     });
     $('#canvas').mouseup(function(e){
@@ -45,13 +44,17 @@ function Main(){
     });
 
     //listen to events
+    this.socket.on('init', function(data){
+        self.reDraw(data);
+    });
+
+
     this.socket.on('userConnect', function(user){
         self.checkOrCreateUser(user);
     });
 
     this.socket.on('userDisconnect', function(user){
         delete self.users[user];
-        console.log(user);
     });
 
     this.socket.on('mouseDown', function(data){
@@ -78,6 +81,20 @@ Main.prototype.checkOrCreateUser = function(user){
     }
 }
 
+
+Main.prototype.reDraw = function(data){
+    for(var i = 0; i < data.length; i++) {
+        this.tools[data[i].tool].move(
+            this.ctx,
+            data[i].prevX ? data[i].prevX : data[i].x,
+            data[i].x,
+            data[i].prevY ? data[i].prevY : data[i].y,
+            data[i].y,
+            data[i].size,
+            data[i].color
+        );
+    }
+}
 
 
 $(document).ready(function(){

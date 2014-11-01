@@ -25,8 +25,6 @@ io.on('connection', function(socket){
     var room = 'main';
     socket.join(room);
 
-    roomData[connectionId] = [];
-
     //announce new user
     socket.broadcast.to(room).emit('userConnect', connectionId);
 
@@ -35,21 +33,27 @@ io.on('connection', function(socket){
         socket.broadcast.to(room).emit('userDisconnect', connectionId);
     });
 
+    //init the canvas for the new user
+    socket.emit('init', roomData);
+
     //mousedown
     socket.on('mouseDown', function(e){
-        roomData[connectionId].push(e);
+        if(e.isDrawing)
+            roomData.push(e);
         socket.broadcast.to(room).emit('mouseDown', {user:connectionId, event:e});
     });
 
     //mouseup
     socket.on('mouseUp', function(e){
-        roomData[connectionId].push(e);
+        if(e.isDrawing)
+            roomData.push(e);
         socket.broadcast.to(room).emit('mouseUp', {user:connectionId, event:e});
     });
 
     //mousemove
     socket.on('mouseMove', function(e){
-        roomData[connectionId].push(e);
+        if(e.isDrawing)
+            roomData.push(e);
         socket.broadcast.to(room).emit('mouseMove', {user:connectionId, event:e});
     });
 

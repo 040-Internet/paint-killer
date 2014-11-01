@@ -7,7 +7,7 @@ function Pen(){
 }
 
 
-Pen.draw = function(ctx, prevX, x, prevY, y, size, color){
+Pen.move = function(ctx, prevX, x, prevY, y, size, color){
     if(!color)
         color = '#000000';
 
@@ -18,7 +18,6 @@ Pen.draw = function(ctx, prevX, x, prevY, y, size, color){
     ctx.lineJoin = ctx.lineCap = 'round';
     ctx.strokeStyle = color;
     ctx.stroke();
-
 }
 
 Pen.start = function(){
