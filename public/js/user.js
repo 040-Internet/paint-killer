@@ -27,22 +27,8 @@ User.prototype.mouseDown = function(e, localUser){
     this.isDrawing = true;
 
     if(this.tool != 'move'){
-        e.x -= pk.document.x; //compensate for document position
-        e.y -= pk.document.y;
-        e.prevX = this.x;
-        e.prevY = this.y;
 
-        if(localUser){
-            e.layer = this.app.document.currentLayer;
-            e.eventType = 'mouseDown';
-            e.size = this.size;
-            e.isDrawing = this.isDrawing;
-            e.color = this.color;
-            e.tool = this.tool;
-            this.app.socket.emit('mouseDown', e);
-        }
-
-        this.draw(e, localUser);
+        this.handleEvent(e, 'mouseDown', localUser);
     }
 
     this.x = e.x;
@@ -54,22 +40,8 @@ User.prototype.mouseUp = function(e, localUser){
     this.isDrawing = false;
 
     if(this.tool != 'move') {
-        e.x -= pk.document.x; //compensate for document position
-        e.y -= pk.document.y;
-        e.prevX = this.x;
-        e.prevY = this.y;
 
-        if (localUser) {
-            e.layer = this.app.document.currentLayer;
-            e.eventType = 'mouseUp';
-            e.color = this.color;
-            e.tool = this.tool;
-            e.size = this.size;
-            e.isDrawing = this.isDrawing;
-            this.app.socket.emit('mouseUp', e);
-        }
-
-        this.draw(e, localUser);
+        this.handleEvent(e, 'mouseUp', localUser);
     }
 
     this.x = e.x;
@@ -80,25 +52,8 @@ User.prototype.mouseMove = function(e, localUser){
 
     if(this.tool != 'move') {
 
-        e.x -= pk.document.x; //compensate for document position
-        e.y -= pk.document.y;
-
-        e.prevX = this.x;
-        e.prevY = this.y;
-
-        if (localUser) {
-            e.layer = this.app.document.currentLayer;
-            e.eventType = 'mouseMove';
-            e.color = this.color;
-            e.size = this.size;
-            e.isDrawing = this.isDrawing;
-            e.tool = this.tool;
-            this.app.socket.emit('mouseMove', e);
-        }
-
-        if (e.isDrawing) {
-            this.draw(e, localUser);
-        }
+        if(!localUser || (localUser && this.isDrawing))
+            this.handleEvent(e, 'mouseMove', localUser);
 
     }else if(this.isDrawing){
         this.app.tools[this.tool].move(null, this.x, e.x, this.y, e.y);
@@ -109,7 +64,23 @@ User.prototype.mouseMove = function(e, localUser){
 
 }
 
-User.prototype.draw = function(e, localUser){
+User.prototype.handleEvent = function(e, eventType, localUser){
+
+    if(localUser){
+        e.x = (e.x - (pk.document.windowWidth *.5)) - pk.document.x; //compensate for document position
+        e.y = (e.y - (pk.document.windowHeight *.5)) - pk.document.y;
+        e.prevX = eventType == 'mouseDown' ? e.prevX : this.x;
+        e.prevY = eventType == 'mouseDown' ? e.prevY : this.y;
+        e.layer = this.app.document.currentLayer;
+        e.eventType = eventType;
+        e.size = this.size;
+        e.isDrawing = this.isDrawing;
+        e.color = this.color;
+        e.tool = this.tool;
+
+        this.app.socket.emit(eventType, e);
+    }
+
     this.app.document.pushToLayer(e.layer, e);
 }
 

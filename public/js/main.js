@@ -25,7 +25,7 @@ function Main(){
     this.$window = $(window);
 
     //app vars
-    this.document = new Document();
+    this.document = new Document(this.$document.width(), this.$document.height());
     this.tools = {
         'pen' : Pen,
         'move' : Move
@@ -42,6 +42,7 @@ function Main(){
     function getPos(e){
         var x = e.pageX - self.canvas.offsetLeft;
         var y = e.pageY - self.canvas.offsetTop;
+
         return {x:x, y:y};
     }
 
@@ -128,8 +129,15 @@ Main.prototype.addDataWithDelay = function(delay, data){
 }
 
 Main.prototype.resize = function(){
-    this.$canvas.attr('width', this.$window.width());
-    this.$canvas.attr('height', this.$window.height());
+    var width = this.$document.width();
+    var height = this.$document.height();
+    this.$canvas.attr('width', width);
+    this.$canvas.attr('height', height);
+
+    //force the document to redraw on resize
+    this.document.windowWidth = width;
+    this.document.windowHeight = height;
+    this.document.reDraw = true;
 }
 
 Main.prototype.draw = function(){

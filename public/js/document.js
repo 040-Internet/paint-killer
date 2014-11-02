@@ -2,9 +2,11 @@
  * Created by acido.
  */
 
-function Document(){
+function Document(windowWidth, windowHeight){
 	this.width = 4000;
 	this.height = 4000;
+	this.windowWidth = windowWidth;
+	this.windowHeight = windowHeight;
 	this.x = 0;
 	this.y = 0;
 	this.layerOrder = [];
@@ -13,6 +15,7 @@ function Document(){
 	this.reDraw = false;
 	this.clear();
 }
+
 
 Document.prototype.clear = function(){
 	this.layerOrder = [];
@@ -32,8 +35,24 @@ Document.prototype.createLayer = function(name){
 
 Document.prototype.setPos = function(x, y){
 	//todo: make sure that we use the document size to restrict movment
+	var minWidth =  (this.width *.5) - (this.windowWidth *.5);
+	var minHeight =  (this.width *.5) - (this.windowWidth *.5);
+
+	if(x < -minWidth)
+		x = -minWidth;
+
+	if(x > minWidth)
+		x = minWidth;
+
+	if(y < -minHeight)
+		y = -minHeight;
+
+	if(y > minHeight)
+		y = minHeight;
+
 	this.x = x;
 	this.y = y;
+
 	this.reDraw = true;
 }
 
@@ -48,18 +67,22 @@ Document.prototype.draw = function(ctx){
 
 	//clear the screen
 	ctx.clearRect(0, 0, pk.$canvas.attr('width'),pk.$canvas.attr('height'));
+
+	//save the current state so that we can reset it when we are done!
 	ctx.save();
 
 	//set correct offset position
 	//this will enable us to move around in the document
-	ctx.translate(this.x, this.y);
+	ctx.translate((pk.canvas.width / 2) + this.x, (pk.canvas.height / 2) + this.y);
 
 	//draw layers
 	for(var i = 0;i < this.layerOrder.length; i++){
 		this.layerOrder[i].draw(ctx, this);
 	}
 
+	//reset our state
 	ctx.restore();
+
 	this.reDraw = false;
 }
 

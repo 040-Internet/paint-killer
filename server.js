@@ -38,15 +38,11 @@ io.on('connection', function(socket){
 
     //mousedown
     socket.on('mouseDown', function(e){
-        if(e.isDrawing)
-            roomData.push(e);
         socket.broadcast.to(room).emit('mouseDown', {user:connectionId, event:e});
     });
 
     //mouseup
     socket.on('mouseUp', function(e){
-        if(e.isDrawing)
-            roomData.push(e);
         socket.broadcast.to(room).emit('mouseUp', {user:connectionId, event:e});
     });
 
