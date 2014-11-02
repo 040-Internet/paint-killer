@@ -2,6 +2,15 @@
  * Created by acido on 22/10/14.
  */
 
+window.requestAnimFrame = (function(){
+    return  window.requestAnimationFrame       ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame    ||
+        function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+        };
+})();
+
 function Main(){
     var self = this;
 
@@ -9,11 +18,17 @@ function Main(){
     var c = document.getElementById("canvas");
     this.ctx = c.getContext("2d");
 
+    //elements
+    this.canvas = $('#canvas').get(0);
+    this.$canvas = $('#canvas');
+    this.$document = $(document);
+    this.$window = $(window);
+
     //app vars
-    this.$canvas = $('#canvas').get(0);
-    this.$document = $(document).get(0);
+    this.document = new Document();
     this.tools = {
-      'pen' : Pen
+        'pen' : Pen,
+        'move' : Move
     };
 
     this.users = [];
@@ -25,13 +40,23 @@ function Main(){
 
     //small helper to get the current position for the mouse pointer
     function getPos(e){
-        var x = e.pageX - self.$canvas.offsetLeft;
-        var y = e.pageY - self.$canvas.offsetTop;
+        var x = e.pageX - self.canvas.offsetLeft;
+        var y = e.pageY - self.canvas.offsetTop;
         return {x:x, y:y};
     }
 
 
     //bind events
+
+    $(document).on('click touch','.tool',function(e){
+        self.currentUser.setTool($(this).data('tool'));
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
+    $(window).resize(function(){
+       self.resize();
+    });
 
     $('#canvas').mousedown(function(e){
         self.currentUser.mouseDown(getPos(e), true);
@@ -73,6 +98,12 @@ function Main(){
         self.users[data.user].mouseMove(data.event, false);
     });
 
+
+}
+
+Main.prototype.run = function(){
+    this.resize();
+    this.draw();
 }
 
 Main.prototype.checkOrCreateUser = function(user){
@@ -84,19 +115,28 @@ Main.prototype.checkOrCreateUser = function(user){
 
 Main.prototype.reDraw = function(data){
     for(var i = 0; i < data.length; i++) {
-        this.tools[data[i].tool].move(
-            this.ctx,
-            data[i].prevX ? data[i].prevX : data[i].x,
-            data[i].x,
-            data[i].prevY ? data[i].prevY : data[i].y,
-            data[i].y,
-            data[i].size,
-            data[i].color
-        );
+        this.document.pushToLayer(data[i].layer, data[i]);
     }
+}
+
+Main.prototype.resize = function(){
+    this.$canvas.attr('width', this.$window.width());
+    this.$canvas.attr('height', this.$window.height());
+}
+
+Main.prototype.draw = function(){
+    var self = this;
+
+    this.document.draw(this.ctx);
+
+    requestAnimFrame(function(){
+        self.draw();
+    })
 }
 
 
 $(document).ready(function(){
     var app = new Main();
+    window.pk = app; //global namespace
+    app.run();
 });

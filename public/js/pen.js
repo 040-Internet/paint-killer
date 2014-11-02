@@ -6,6 +6,9 @@ function Pen(){
 
 }
 
+Pen.init = function(){
+    $('#canvas').css('cursor', 'crosshair');
+}
 
 Pen.move = function(ctx, prevX, x, prevY, y, size, color){
     if(!color)

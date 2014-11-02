@@ -1,10 +1,11 @@
 /* BASICS ---------------- */
-html {
+html, body {
     height: 100%;
+    width:100%;
+    overflow: hidden;
 }
 
 body {
-    height: 100%;
     background-color: #efefef;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
@@ -56,26 +57,9 @@ button {
 
 
 /* CANVAS ---------------- */
-#canvas-holder {
-    text-align: center;
-    height: 100%;
-}
-
-#canvas-holder:before {
-    content: '';
-    height: 100%;
-    background: #000;
-}
-
-#canvas-holder:before,
-canvas {
-    display: inline-block;
-    vertical-align: middle;
-}
 
 canvas {
     background: #fff;
-    margin-left: -0.25em
 }
 
 /* TOOLBAR ---------------- */

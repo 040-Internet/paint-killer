@@ -9,15 +9,20 @@
 <body>
 
     <div class="toolbar">
-        Toolbar: Man skulle kunna ha verktyg här
+        <ul>
+            <li class="tool" data-tool="move">Move</li>
+            <li class="tool" data-tool="pen">Pen</li>
+        </ul>
     </div>
 
     <div id="canvas-holder">
-        <canvas id="canvas" width="450" height="450"></canvas>
+        <canvas id="canvas" width="0" height="0"></canvas>
     </div>
 
     <script src="js/lib/jquery-1.11.1.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="js/document.js"></script>
+    <script src="js/move.js"></script>
     <script src="js/pen.js"></script>
     <script src="js/user.js"></script>
     <script src="js/main.js"></script>
