@@ -114,9 +114,17 @@ Main.prototype.checkOrCreateUser = function(user){
 
 
 Main.prototype.reDraw = function(data){
+    var self = this;
     for(var i = 0; i < data.length; i++) {
-        this.document.pushToLayer(data[i].layer, data[i]);
+        this.addDataWithDelay(i*10, data[i]);
     }
+}
+
+Main.prototype.addDataWithDelay = function(delay, data){
+    var self = this;
+    setTimeout(function(){
+        self.document.pushToLayer(data.layer, data);
+    },delay);
 }
 
 Main.prototype.resize = function(){
