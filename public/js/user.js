@@ -6,7 +6,7 @@
 function User(app, id){
     this.app = app;
     this.id = id;
-    this.color = getRandomColor();
+    this.color = '#cccccc';
     this.x = null;
     this.y = null;
     this.isDrawing = false;
@@ -20,7 +20,7 @@ User.prototype.setTool = function(tool){
 }
 
 User.prototype.setColor = function(color){
-
+    this.color = color;
 }
 
 User.prototype.mouseDown = function(e, localUser){
@@ -87,14 +87,4 @@ User.prototype.handleEvent = function(e, eventType, localUser){
 //Animate pointer for me!!!!
 User.prototype.movePointer = function(){
 
-}
-
-//Add color picker for me!!!!!!!
-function getRandomColor() {
-    var letters = '0123456789ABCDEF'.split('');
-    var color = '#';
-    for (var i = 0; i < 6; i++ ) {
-        color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
 }

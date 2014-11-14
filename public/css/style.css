@@ -70,3 +70,12 @@ canvas {
     top: 10px;
     left: 10px;
 }
+
+/* COLOR PICKER ---------------- */
+.color-picker {
+    padding: 20px;
+    background: #ccc;
+    position: fixed;
+    bottom: 10px;
+    left: 10px;
+}

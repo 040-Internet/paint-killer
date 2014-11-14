@@ -23,6 +23,7 @@ function Main(){
     this.$canvas = $('#canvas');
     this.$document = $(document);
     this.$window = $(window);
+    this.colorPicker = document.querySelector('color-picker');
 
     //app vars
     this.document = new Document(this.$document.width(), this.$document.height());
@@ -99,6 +100,11 @@ function Main(){
         self.users[data.user].mouseMove(data.event, false);
     });
 
+    //color picker event
+    this.colorPicker.addEventListener('colorselected', function(e) {
+        self.currentUser.setColor(e.detail.hex);
+        $('.color-picker').css('background-color', e.detail.hex);
+    });
 
 }
 
@@ -117,7 +123,7 @@ Main.prototype.checkOrCreateUser = function(user){
 Main.prototype.reDraw = function(data){
     var self = this;
     for(var i = 0; i < data.length; i++) {
-        this.addDataWithDelay(i*10, data[i]);
+        this.addDataWithDelay(i*1, data[i]);
     }
 }
 
