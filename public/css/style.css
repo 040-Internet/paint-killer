@@ -86,6 +86,20 @@ canvas.layer {
     z-index:99999;
 }
 
+/* LAYERS ---------------- */
+.layers {
+    padding: 20px;
+    background: #ccc;
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index:99999;
+}
+
+.layers .layer.active {
+    background-color:#fff;
+}
+
 /* COLOR PICKER ---------------- */
 .color-picker {
     padding: 20px;

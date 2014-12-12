@@ -3,7 +3,10 @@
  */
 
 function Document(windowWidth, windowHeight){
+	var self = this;
+
 	this.$canvasHolder = $('#canvas-holder');
+	this.$layersList = $('.layers ul');
 	this.width = 4000;
 	this.height = 4000;
 	this.windowWidth = windowWidth;
@@ -14,6 +17,12 @@ function Document(windowWidth, windowHeight){
 	this.layerMap = [];
 	this.currentLayer = 'root';
 	this.redraw = true;
+
+	$(document).on('click touch','.layers .layer',function(e){
+		self.setActiveLayer($(this).data('name'));
+		e.preventDefault();
+		e.stopPropagation();
+	});
 
 	this.clear();
 }
@@ -29,8 +38,7 @@ Document.prototype.clear = function(){
 	this.createLayer('first');
 	this.createLayer('root');
 	this.createLayer('last');
-
-	this.currentLayer = 'root';
+	this.setActiveLayer('root');
 	this.redraw = true;
 }
 
@@ -39,6 +47,22 @@ Document.prototype.createLayer = function(name){
 	this.layerOrder.push(layer);
 	this.layerMap[name] = layer;
 	this.redraw = true;
+
+
+}
+
+Document.prototype.setActiveLayer = function(name){
+	this.currentLayer = name;
+	this.drawLayerList();
+}
+
+Document.prototype.drawLayerList = function(){
+	this.$layersList.empty();
+	for(var i = 0;i <= this.layerOrder.length;i++){
+		if(this.layerOrder[i]) {
+			this.$layersList.append('<li class="layer '+(this.layerOrder[i].name == this.currentLayer ?  'active' : '')+'" data-name="'+this.layerOrder[i].name+'">' + this.layerOrder[i].name + '</li>');
+		}
+	}
 }
 
 Document.prototype.setPos = function(x, y){
