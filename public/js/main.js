@@ -15,12 +15,13 @@ function Main(){
     var self = this;
 
     //canvas
-    var c = document.getElementById("canvas");
+    /*var c = document.getElementById("canvas");
     this.ctx = c.getContext("2d");
 
     //elements
     this.canvas = $('#canvas').get(0);
     this.$canvas = $('#canvas');
+    this.$canvasRender = $('#canvas-render');*/
     this.$document = $(document);
     this.$window = $(window);
     this.colorPicker = document.querySelector('color-picker');
@@ -41,8 +42,8 @@ function Main(){
 
     //small helper to get the current position for the mouse pointer
     function getPos(e){
-        var x = e.pageX - self.canvas.offsetLeft;
-        var y = e.pageY - self.canvas.offsetTop;
+        var x = e.pageX - self.document.$canvasHolder.get(0).offsetLeft;
+        var y = e.pageY - self.document.$canvasHolder.get(0).offsetTop;
 
         return {x:x, y:y};
     }
@@ -60,13 +61,13 @@ function Main(){
        self.resize();
     });
 
-    $('#canvas').mousedown(function(e){
+    $('#canvas-holder > .overlay').mousedown(function(e){
         self.currentUser.mouseDown(getPos(e), true);
     });
-    $('#canvas').mouseup(function(e){
+    $('#canvas-holder > .overlay').mouseup(function(e){
         self.currentUser.mouseUp(getPos(e), true);
     });
-    $('#canvas').mousemove(function(e){
+    $('#canvas-holder > .overlay').mousemove(function(e){
         self.currentUser.mouseMove(getPos(e), true);
     });
 
@@ -137,19 +138,14 @@ Main.prototype.addDataWithDelay = function(delay, data){
 Main.prototype.resize = function(){
     var width = this.$document.width();
     var height = this.$document.height();
-    this.$canvas.attr('width', width);
-    this.$canvas.attr('height', height);
 
-    //force the document to redraw on resize
-    this.document.windowWidth = width;
-    this.document.windowHeight = height;
-    this.document.reDraw = true;
+    this.document.resize(width, height);
 }
 
 Main.prototype.draw = function(){
     var self = this;
 
-    this.document.draw(this.ctx);
+    this.document.draw();
 
     requestAnimFrame(function(){
         self.draw();

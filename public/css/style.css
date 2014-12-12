@@ -6,7 +6,7 @@ html, body {
 }
 
 body {
-    background-color: #efefef;
+    background-color: #fff;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
 }
@@ -58,8 +58,22 @@ button {
 
 /* CANVAS ---------------- */
 
-canvas {
-    background: #fff;
+#canvas-holder, #canvas-holder .overlay {
+    position: absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:100%;
+}
+
+#canvas-holder .overlay {
+    z-index:9999;
+}
+
+canvas.layer {
+    position: absolute;
+    top:0px;
+    left:0px;
 }
 
 /* TOOLBAR ---------------- */
@@ -69,6 +83,7 @@ canvas {
     position: fixed;
     top: 10px;
     left: 10px;
+    z-index:99999;
 }
 
 /* COLOR PICKER ---------------- */
@@ -78,4 +93,5 @@ canvas {
     position: fixed;
     bottom: 10px;
     left: 10px;
+    z-index:99999;
 }

@@ -67,6 +67,7 @@ User.prototype.mouseMove = function(e, localUser){
 User.prototype.handleEvent = function(e, eventType, localUser){
 
     if(localUser){
+        console.log(pk.document.x);
         e.x = (e.x - (pk.document.windowWidth *.5)) - pk.document.x; //compensate for document position
         e.y = (e.y - (pk.document.windowHeight *.5)) - pk.document.y;
         e.prevX = eventType == 'mouseDown' ? e.prevX : this.x;
